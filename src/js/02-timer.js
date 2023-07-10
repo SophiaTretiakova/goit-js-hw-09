@@ -5,13 +5,13 @@ import 'flatpickr/dist/flatpickr.min.css';
 const refs = {
   startBtn: document.querySelector('[data-start]'),
   timePicker: document.querySelector('#datetime-picker'),
-  daysEl: document.querySelector('[data-days]'),
-  hoursEl: document.querySelector('[data-hours]'),
-  minutesEl: document.querySelector('[data-minutes]'),
-  secondsEl: document.querySelector('[data-seconds]'),
+  days: document.querySelector('[data-days]'),
+  hours: document.querySelector('[data-hours]'),
+  minutes: document.querySelector('[data-minutes]'),
+  seconds: document.querySelector('[data-seconds]'),
 };
 
-let timerID;
+refs.startBtn.disabled = true;
 
 const options = {
   enableTime: true,
@@ -20,30 +20,33 @@ const options = {
   minuteIncrement: 1,
   onClose(selectedDates) {
     if (Date.parse(selectedDates[0]) < Date.now()) {
-      Notiflix.Notify.failure('Please choose a date in the future');
-      refs.startBtn.disabled = true;
+      Notiflix.Notify.warning('Please select date in future');
       return;
-    } else {
-      refs.startBtn.disabled = false;
     }
+    refs.startBtn.disabled = false;
   },
 };
 
-flatpickr('#datetime-picker', options);
+flatpickr(refs.timePicker, options);
+
+let timerId;
 
 refs.startBtn.addEventListener('click', () => {
-  timerID = setInterval(countDown, 1000);
+  timerId = setInterval(countDown, 1000);
   setTimeout(() => {
-    clearInterval(timerID);
+    clearInterval(timerId);
   }, Date.parse(refs.timePicker.value) - Date.now());
 });
 
 function countDown() {
   const time = convertMs(Date.parse(refs.timePicker.value) - Date.now());
-  refs.daysEl.textContent = addLeadingZero(time.days.toString());
-  refs.hoursEl.textContent = addLeadingZero(time.hours.toString());
-  refs.minutesEl.textContent = addLeadingZero(time.minutes.toString());
-  refs.secondsEl.textContent = addLeadingZero(time.seconds.toString());
+  if (time.days.toString() === '-1') {
+    return;
+  }
+  refs.days.textContent = addLeadingZero(time.days.toString());
+  refs.hours.textContent = addLeadingZero(time.hours.toString());
+  refs.minutes.textContent = addLeadingZero(time.minutes.toString());
+  refs.seconds.textContent = addLeadingZero(time.seconds.toString());
 }
 
 function convertMs(ms) {
