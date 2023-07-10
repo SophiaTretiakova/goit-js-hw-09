@@ -8,18 +8,22 @@ const refs = {
   body: document.querySelector('body'),
 };
 let timerId;
+
 refs.startBtn.addEventListener('click', () => {
   refs.body.style.backgroundColor = getRandomHexColor();
   timerId = setColorChange();
-  refs.startBtn.disabled = true;
-  refs.stopBtn.disabled = false;
+  BtnIsDisabled(true);
 });
 
 refs.stopBtn.addEventListener('click', () => {
   clearInterval(timerId);
-  refs.startBtn.disabled = false;
-  refs.stopBtn.disabled = true;
+  BtnIsDisabled(false);
 });
+
+function BtnIsDisabled(bool) {
+  refs.startBtn.disabled = bool;
+  refs.stopBtn.disabled = !bool;
+}
 
 function getRandomHexColor() {
   return `#${Math.floor(Math.random() * 16777215)

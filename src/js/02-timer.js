@@ -19,9 +19,9 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-    console.log(selectedDates[0]);
     if (Date.parse(selectedDates[0]) < Date.now()) {
       Notiflix.Notify.failure('Please choose a date in the future');
+      refs.startBtn.disabled = true;
       return;
     } else {
       refs.startBtn.disabled = false;
@@ -66,9 +66,5 @@ function convertMs(ms) {
 }
 
 function addLeadingZero(value) {
-  if (value === '0' || value.length < 2) {
-    return value.padStart(2, '0');
-  }
-
-  return value;
+  return value.padStart(2, '0');
 }
